@@ -1,0 +1,81 @@
+body {
+    /* background-color: rgb(138, 109, 113);  */
+    background-color: rgba(65, 50, 64, 0.877);
+    margin: auto;
+    width: 1250px;
+    align-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+.BodyofPer .Groupie-Tracker {
+    box-sizing: border-box;
+    width: 1250px;
+    margin: auto;
+    padding: 25px;
+    background-color:gray;
+    margin-top: 35px;
+    border-top-width: 4px;
+    border-top-style: double;
+    border-left-width: 4px;
+    border-left-style: double;
+    border-right-width: 4px;
+    border-right-style: double;
+    border-bottom-width: 4px;
+    border-bottom-style: double;
+}
+
+.TextGroupieTracker {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+    padding-top: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 48pt;
+    color: rgb(185, 185, 185);
+}
+
+.Image {
+    margin: auto;
+    padding: 10px;
+    width: 17%;
+    /* padding-bottom: 30px; */
+    float: left;
+    border-top-width: 4px;
+    border-top-style: double;
+    border-right-width: 4px;
+    border-right-style: double;
+    border-left-width: 4px;
+    border-left-style: double;
+    border-bottom-width: 4px;
+    border-bottom-style: double;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+ .Name,
+ .members,
+ .FirstAlbum,
+ .CreationDate {
+    margin: auto;
+    padding-top: 30px;
+    /* padding-top: 23px; */
+    color: rgb(185, 185, 185);
+    font-size: 15pt;
+    width: 63%;
+    /* padding: 10px; */
+    padding-bottom: 20px;
+}
+.Locations{
+    margin: auto;
+    /* width: 100%; */
+    padding-left: 10px;
+    padding-top: 8px;
+    font-size: 15pt;
+}
+.home{
+    text-align: center;
+}

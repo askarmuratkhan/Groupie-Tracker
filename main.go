@@ -22,24 +22,24 @@ type Artist struct {
 	Relations    string
 }
 
-type ConcertDates struct {
+type ConcDates struct {
 	LocId    int
 	Location string
 	Dates    []string
 }
 
 type New struct {
-	ID           int            `json:"id"`
-	Image        string         `json:"image"`
-	Name         string         `json:"name"`
-	Members      []string       `json:"members"`
-	CreationDate int            `json:"creationDate"`
-	FirstAlbum   string         `json:"firstAlbum"`
-	ConcertDates []ConcertDates `json:"concertDates"`
+	ID           int         `json:"id"`
+	Image        string      `json:"image"`
+	Name         string      `json:"name"`
+	Members      []string    `json:"members"`
+	CreationDate int         `json:"creationDate"`
+	FirstAlbum   string      `json:"firstAlbum"`
+	ConcertDates []ConcDates `json:"concertDates"`
 }
 
 var artists []Artist
-var groupie New
+
 var tplAll = template.Must(template.ParseFiles("templates/index.html"))
 var tplGroup = template.Must(template.ParseFiles("templates/group.html"))
 var eRRor = template.Must(template.ParseFiles("templates/404.html"))
@@ -49,14 +49,15 @@ func main() {
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("CSS"))
 	mux.HandleFunc("/", myHandlerMain)
-	mux.Handle("/CSS/", http.StripPrefix("/CSS", fs))
+	mux.Handle("/CSS/", http.StripPrefix("/CSS/", fs))
 	http.ListenAndServe(":8080", mux)
 }
 
 func myHandlerMain(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
 	if err != nil {
-		fmt.Println(err.Error)
+		w.WriteHeader(http.StatusInternalServerError)
+		eRRor.Execute(w, 500)
 	}
 	data, err2 := ioutil.ReadAll(resp.Body)
 	if err2 != nil {
@@ -65,15 +66,16 @@ func myHandlerMain(w http.ResponseWriter, r *http.Request) {
 	resp.Body.Close()
 
 	json.Unmarshal(data, &artists)
-	fmt.Println(r.URL.String())
+
 	if r.URL.String() == "/" {
 		tplAll.Execute(w, artists)
 	} else {
+		var groupie New
 		name := r.URL.String()[1:]
 		groupID, err := strconv.Atoi(name)
 		if err != nil || groupID > 52 || groupID < 1 {
-			w.WriteHeader(http.StatusBadRequest)
-			eRRor.Execute(w, nil)
+			w.WriteHeader(http.StatusNotFound)
+			eRRor.Execute(w, 404)
 			return
 		}
 		relatslink := ""
@@ -114,14 +116,19 @@ func myHandlerMain(w http.ResponseWriter, r *http.Request) {
 		stringData := string(data)
 		uniqueLoc := strings.Split(stringData, "],")
 		for index, location := range uniqueLoc {
-			var loc ConcertDates
+			var loc ConcDates
 			loc.LocId = index
 			relation := strings.Split(location, ":[")
-			loc.Location = relation[0]
+			loc.Location = relation[0][1 : len(relation[0])-1]
 			loc.Dates = strings.Split(relation[1], ",")
+			for i, val := range loc.Dates {
+				loc.Dates[i] = val[1 : len(val)-1]
+			}
 			groupie.ConcertDates = append(groupie.ConcertDates, loc)
 		}
+
 		tplGroup.Execute(w, groupie)
+
 	}
 
 }
