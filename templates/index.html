@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>My Groupie-Tracker</title>
+        <link rel="stylesheet" href="/CSS/main.css">
+    </head>
+    <body>
+        <div class="first">
+            <div class="Groupie">
+            <h1>The most popular music groups in the world</h1>
+            </div>
+            <div class="Singers">
+            
+            </div>
+        </div>
+        <!-- <div>
+            <h2>Please, input the name of the artist</h2>
+            <form method="POST">
+                <br>
+                <input id="id" class="search" type="text" name="artistName">
+                <button type="submit">Search</button>
+                <br>
+            </form>
+        </div> -->
+        <div class="found">
+            
+
+                  {{ range $key, $value := . }}
+                  <div class="blockinf" >             
+                    <div class="smallb">  
+                        <p class="name">{{ $value.Name }}</p>
+                     
+                      <img class="image" src="{{ $value.Image }}" alt="group-label">
+                      <div class="link"></div> <a href={{ $value.Id }}>Get more</a>
+                    </div>   
+                </div>
+                  {{ end }}
+               
+            </div>  
+            
+    </body>
+    
+</html>

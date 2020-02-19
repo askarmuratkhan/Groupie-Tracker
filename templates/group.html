@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<head>
+        <meta charset="UTF-8" />
+        <title>Groupie - Tracker</title>
+        <link rel="stylesheet" type="text/css" href="/assets/style.css" />
+</head>
+<body>   
+  
+        <div class="Groupie-Tracker"> 
+            <p class="TextGroupieTracker" > Groupie - Tracker </p>
+        </div> 
+        <div class="BodyofPer">
+            <form action="/info/" method="GET">
+            <img class="Image" src= {{ .Image }}  alt="альтернативный текст" />
+            <p class="Name">Name: {{ .Name }}</p>
+            <div class="members">Members: {{range .Members}}  {{.}}, {{end}}</div>
+            <!-- <a href = {{ .Locations }}>  Click here! </a> -->
+            <div class="CreationDate">Creation date:{{ .CreationDate }}</div>
+            <div class ="FirstAlbum">First album: {{ .FirstAlbum }}</div>
+            <pre class="Locations">{{range .ConcertDates}}  
+{{.}} 
+{{end}} </pre>  
+    </form>
+        <form action="/info/next">
+            <input  class="hsome" type="submit" value="Next"></input>  
+        </form>
+        
+        <div class="home">    
+        <a  href="/"> -Home- </a>
+        </div>
+    <!-- <button class="Next" type="button" onclick="('Hello world!')">Next</button> -->
+
+        </div>
+     
+      
+    </form>
+   
+</body> 
