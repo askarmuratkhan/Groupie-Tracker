@@ -6,6 +6,31 @@
         <link rel="stylesheet" href="/CSS/main.css">
     </head>
     <body>
+        <div class="search-bar">
+            <form action="/" method="POST"><br>
+                <input class="search" name="toFind" list="list" placeholder="Search">
+
+                <datalist id="list">
+                    {{ range $key, $value := . }}
+                    <option>{{ $value.Name }} // Artist </option>
+                        {{ range $key, $value2 := $value.Members }}
+                        <option>{{ $value2 }} // Members </option>
+                        {{ end }}
+                    <option>{{ $value.FirstAlbum }} // First Album </option>
+                    <option>{{ $value.CreationDate }} // Creation Date </option>
+                    {{ end }}
+                </datalist>
+
+                <select class="selector" id="sType" name="searchType">
+                    <option selected="" value="artist">Artist</option>
+                    <option value="member">Member</option>
+                    <option value="location">Location</option>
+                    <option value="firstAlbum">First Album</option>
+                    <option value="creationDate">Creation Date</option>
+                </select>
+                <button type="submit">Search</button><br><br>
+            </form>
+        </div>
         <div class="first">
             <div class="Groupie">
             <h1>The most popular music groups in the world</h1>

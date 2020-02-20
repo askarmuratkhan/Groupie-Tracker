@@ -63,7 +63,22 @@ body {
 .name {
     padding-bottom: 15px;
     margin: auto;
-    width: 100%;   
+    width: 100%;
+    color: black;
+
 }
 
+p > a {
+    text-decoration: none;
+    
+}
+
+p > a:visited {
+    color: none;
+}
+
+.error {
+    text-align: center !important;
+    text-size-adjust: 50;
+}
   

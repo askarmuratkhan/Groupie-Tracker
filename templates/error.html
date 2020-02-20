@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="/CSS/main.css">
 </head>
 <body>
-    <div class="found">
-        <p text-align="center">WARNING<br>{{ err }}</p>
-  
+    <div class="error">
+        {{ if . }}
+        <p text-align="center">WARNING<br><br>{{ . }}</p>
+        {{ end }}
+        <a href="/">Go to main page</a>
     </div>
+    
 </body></html>

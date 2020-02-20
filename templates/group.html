@@ -1,34 +1,36 @@
 
 <!DOCTYPE html>
 <head>
-        <meta charset="UTF-8" />
-        <title>Groupie - Tracker</title>
-        <link rel="stylesheet" type="text/css" href="/CSS/style.css" />
+    <meta charset="UTF-8" />
+    <title>Groupie - Tracker</title>
+    <link rel="stylesheet" type="text/css" href="/CSS/style.css" />
 </head>
 <body>   
-  
-        <div class="Groupie-Tracker"> 
-            <p class="TextGroupieTracker" > Groupie - Tracker </p>
-        </div> 
-        <div class="BodyofPer">
-            <section action="/info/" method="GET">
-            <img class="Image" src= {{ .Image }}  alt="Картинка группы" />
-            <p class="Name">Name: {{ .Name }}</p>
-            <p class="members">Members: {{range .Members}}  {{.}} {{end}}</p>
-            <p class="CreationDate">Creation date: {{ .CreationDate }}</p>
-            <p class="FirstAlbum">First album: {{ .FirstAlbum }}</p>
+    <a href="/" class="members">Go to main page</a>
+    <div class="Groupie-Tracker"> 
+        <p class="TextGroupieTracker" > {{ .Name }} </p>
+    </div> 
+    <div class="BodyofPer">
+        <section action="/info/" method="GET">
+        <img class="Image" src= {{ .Image }}  alt="Картинка группы" />
+        <p class="members">Members: / {{range .Members}}  {{.}} / {{end}}</p>
+        <p class="CreationDate">Creation date: {{ .CreationDate }}</p>
+        <p class="FirstAlbum">First album: {{ .FirstAlbum }}</p>
+        <br>
+        <h2 class="members">Concerts:</h2class="members"> 
+            
+            {{ range $key, $value := .ConcertDates }} 
             <br>
-            <h2>Concerts:</h2> 
-                
-                {{ range $key, $value := .ConcertDates }} 
-                <br>
-                <p>Место:{{ $value.Location }}</p>
-                <p>Даты: {{ range $value.Dates }}  {{.}} {{end}}</p>
-               
+            <p>Город: {{ $value.Location }}</p>
+            <p>Даты: </p>
+                {{ range $value.Dates }} 
+                <p> {{.}} </p> 
                 {{end}}
- 
-           
-            </section>
+            
+            {{end}}
+
         
-        </div>   
+        </section>
+    
+    </div>   
 </body> 
