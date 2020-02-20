@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	// "fmt"
 )
 
 // структура идентичная API
@@ -62,6 +63,13 @@ func main() {
 
 // Основной обработчик
 func myHandlerMain(w http.ResponseWriter, r *http.Request) {
+	
+	
+	// shablon := r.FormValue("toFind")
+	// fmt.Println(shablon)
+	//  TYPE := r.FormValue("searchType")
+	//  fmt.Println(TYPE)
+
 	if r.Method == "POST" {
 		if r.URL.String() != "/" {
 			w.WriteHeader(http.StatusBadRequest)
@@ -76,24 +84,29 @@ func myHandlerMain(w http.ResponseWriter, r *http.Request) {
 		tplAll.ExecuteTemplate(w, "error.html", 400)
 		return
 	}
-	GetArtistBase(w)
 
+	GetArtistBase(w) 
+	
 	if r.URL.String() == "/" { // условие для главной страницы
+	
 		tplAll.ExecuteTemplate(w, "index.html", artists)
 	} else {
 
 		name := r.URL.String()[1:]
 		groupID, err := strconv.Atoi(name)
-		if err != nil || groupID > 52 || groupID < 1 { // если нечего отображать
+		if err != nil && groupID > 52 && groupID < 1 { // если нечего отображать
 			w.WriteHeader(http.StatusNotFound)
 			tplAll.ExecuteTemplate(w, "error.html", 404)
 			return
 		}
+		
+			groupie := GetFullInfoForArtist(w, groupID)
+			tplAll.ExecuteTemplate(w, "group.html", groupie)
+		
+	} 
+	
 
-		groupie := GetFullInfoForArtist(w, groupID)
 
-		tplAll.ExecuteTemplate(w, "group.html", groupie)
-	}
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -127,6 +140,7 @@ func GetFullInfoForArtist(w http.ResponseWriter, groupID int) ArtistFull {
 		tplAll.ExecuteTemplate(w, "error.html", 500)
 		return groupie
 	}
+	
 	data, err2 := ioutil.ReadAll(resp.Body)
 	if err2 != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -166,15 +180,16 @@ func GetArtistBase(w http.ResponseWriter) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return
+		return 
 	}
 	data, err2 := ioutil.ReadAll(resp.Body)
 	if err2 != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return
+		return 
 	}
 	resp.Body.Close()
 	json.Unmarshal(data, &artists)
-	return
+	
+	return 
 }

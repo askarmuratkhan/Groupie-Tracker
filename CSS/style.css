@@ -61,13 +61,15 @@ body {
  .FirstAlbum,
  .CreationDate {
     margin: auto;
-    padding-top: 30px;
+    padding-top: 15px;
+    padding-left: 17px;
     /* padding-top: 23px; */
     color: rgb(185, 185, 185);
     font-size: 15pt;
+    padding-bottom: 20px;
     width: 63%;
     /* padding: 10px; */
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
 }
 .Locations{
     margin: auto;
@@ -78,4 +80,8 @@ body {
 }
 .home{
     text-align: center;
+}
+
+.headblock {
+    padding-top: 20px;
 }

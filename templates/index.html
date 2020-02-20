@@ -6,13 +6,14 @@
         <link rel="stylesheet" href="/CSS/main.css">
     </head>
     <body>
+        <div class="SEARCH">
         <div class="search-bar">
             <form action="/" method="POST"><br>
                 <input class="search" name="toFind" list="list" placeholder="Search">
 
-                <datalist id="list">
+                <datalist name="list" >
                     {{ range $key, $value := . }}
-                    <option>{{ $value.Name }} // Artist </option>
+                    <option >{{ $value.Name }} // Artist </option>
                         {{ range $key, $value2 := $value.Members }}
                         <option>{{ $value2 }} // Members </option>
                         {{ end }}
@@ -31,19 +32,21 @@
                 <button type="submit">Search</button><br><br>
             </form>
         </div>
+    </div>
         <div class="first">
             <div class="Groupie">
-            <h1>The most popular music groups in the world</h1>
+            <h1 class="Title">The most popular music groups in the world</h1>
             </div>
         </div>
         <div class="found">
                   {{ range $key, $value := . }}
                   <div class="blockinf" >             
                     <div class="smallb">  
-                        <p class="name"><a href={{ $value.Id }}>{{ $value.Name }}</a></p>
-                     
+                    
+                        <p class="name"><a class="textcolor" href={{ $value.Id }}>{{ $value.Name }}</a></p>
+                    
                         <a href={{ $value.Id }}><img class="image" src="{{ $value.Image }}" alt="group-label" href={{ $value.Id }}></a>
-                      <div class="link"></div> <a href={{ $value.Id }}>Get more</a>
+                      <div class="LINK"></div> <a class="link" href={{ $value.Id }}>Get more</a>
                     </div>   
                 </div>
                   {{ end }}

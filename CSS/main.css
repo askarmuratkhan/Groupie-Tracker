@@ -64,13 +64,15 @@ body {
     padding-bottom: 15px;
     margin: auto;
     width: 100%;
-    color: black;
-
 }
+
+.textcolor {
+    color: rgb(168, 68, 21);
+}
+
 
 p > a {
     text-decoration: none;
-    
 }
 
 p > a:visited {
@@ -82,3 +84,21 @@ p > a:visited {
     text-size-adjust: 50;
 }
   
+.SEARCH {
+    width: 100%;
+}
+
+.search-bar{
+    width: 15%;
+    margin: auto;
+   
+}
+
+.Title{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: rgb(41, 39, 68);
+}
+.link {
+    color: rgb(25, 83, 110);
+}
+
