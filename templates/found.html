@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>My Groupie-Tracker</title>
+        <link rel="stylesheet" href="/CSS/main.css">
+    </head>
+    <body>
+        <div class="SEARCH">
+        <div class="search-bar">
+            <p><a href="/" class="members">Go to main page</a></p>
+        </div>
+    </div>
+        <div class="first">
+            
+            <div class="Groupie">
+            <h1 class="Title">Found artists:</h1>
+            </div>
+        </div>
+        <div class="found">
+                  {{ range $key, $value := . }}
+                  <div class="blockinf" >             
+                    <div class="smallb">  
+                    
+                        <p class="name"><a class="textcolor" href={{ $value.ID }}>{{ $value.Name }}</a></p>
+                    
+                        <a href={{ $value.ID }}><img class="image" src="{{ $value.Image }}" alt="group-label" href={{ $value.ID }}></a>
+                      <div class="LINK"></div> <a class="link" href={{ $value.ID }}>Get more</a>
+                    </div>   
+                </div>
+                  {{ end }}
+               
+            </div>  
+            
+    </body>
+    
+</html>

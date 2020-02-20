@@ -13,12 +13,15 @@
 
                 <datalist name="list" >
                     {{ range $key, $value := . }}
-                    <option >{{ $value.Name }} // Artist </option>
-                        {{ range $key, $value2 := $value.Members }}
-                        <option>{{ $value2 }} // Members </option>
-                        {{ end }}
-                    <option>{{ $value.FirstAlbum }} // First Album </option>
-                    <option>{{ $value.CreationDate }} // Creation Date </option>
+                        <option >{{ $value.Name }} // Artist </option>
+                            {{ range $key, $value2 := $value.Members }}
+                                <option>{{ $value2 }} // Members </option>
+                            {{ end }}
+                        <option>{{ $value.FirstAlbum }} // First Album </option>
+                        <option>{{ $value.CreationDate }} // Creation Date </option>
+                            {{ range $key, $value2 := $value.Locations }}
+                                <option>{{ $value2 }} // Location </option>
+                            {{ end }}
                     {{ end }}
                 </datalist>
 
@@ -43,10 +46,10 @@
                   <div class="blockinf" >             
                     <div class="smallb">  
                     
-                        <p class="name"><a class="textcolor" href={{ $value.Id }}>{{ $value.Name }}</a></p>
+                        <p class="name"><a class="textcolor" href={{ $value.ID }}>{{ $value.Name }}</a></p>
                     
-                        <a href={{ $value.Id }}><img class="image" src="{{ $value.Image }}" alt="group-label" href={{ $value.Id }}></a>
-                      <div class="LINK"></div> <a class="link" href={{ $value.Id }}>Get more</a>
+                        <a href={{ $value.ID }}><img class="image" src="{{ $value.Image }}" alt="group-label" href={{ $value.ID }}></a>
+                      <div class="LINK"></div> <a class="link" href={{ $value.ID }}>Get more</a>
                     </div>   
                 </div>
                   {{ end }}

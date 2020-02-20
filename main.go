@@ -1,49 +1,12 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"text/template"
-	// "fmt"
 )
-
-// структура идентичная API
-type Artist struct {
-	Id           float32
-	Image        string
-	Name         string
-	Members      []string
-	CreationDate float32
-	FirstAlbum   string
-	Locations    string
-	ConcertDates string
-	Relations    string
-}
-
-// структура, составленная из relation
-// (составляется отдельным обработчиком)
-type ConcDates struct {
-	LocId    int
-	Location string
-	Dates    []string
-}
-
-// детальная структура по исполнителю для отображения на личной странице
-type ArtistFull struct {
-	ID           int         `json:"id"`
-	Image        string      `json:"image"`
-	Name         string      `json:"name"`
-	Members      []string    `json:"members"`
-	CreationDate int         `json:"creationDate"`
-	FirstAlbum   string      `json:"firstAlbum"`
-	ConcertDates []ConcDates `json:"concertDates"`
-}
-
-// основная база
-var artists []Artist
 
 // страницы, используемые в проекте
 var tplAll = template.Must(template.ParseGlob("templates/*.html"))
@@ -63,8 +26,7 @@ func main() {
 
 // Основной обработчик
 func myHandlerMain(w http.ResponseWriter, r *http.Request) {
-	
-	
+	GetArtistBase(w)
 	// shablon := r.FormValue("toFind")
 	// fmt.Println(shablon)
 	//  TYPE := r.FormValue("searchType")
@@ -76,120 +38,78 @@ func myHandlerMain(w http.ResponseWriter, r *http.Request) {
 			tplAll.ExecuteTemplate(w, "error.html", 400)
 			return
 		}
-		http.HandleFunc("/", SearchHandler)
 
+		SearchHandler(w, r)
+		return
 	}
 	if r.Method != "GET" {
-		w.WriteHeader(http.StatusBadRequest)
-		tplAll.ExecuteTemplate(w, "error.html", 400)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		tplAll.ExecuteTemplate(w, "error.html", 405)
 		return
 	}
 
-	GetArtistBase(w) 
-	
 	if r.URL.String() == "/" { // условие для главной страницы
-	
-		tplAll.ExecuteTemplate(w, "index.html", artists)
+		err := tplAll.ExecuteTemplate(w, "index.html", db)
+		if err != nil {
+			fmt.Println(err)
+		}
 	} else {
 
 		name := r.URL.String()[1:]
 		groupID, err := strconv.Atoi(name)
-		if err != nil && groupID > 52 && groupID < 1 { // если нечего отображать
+		if err != nil || groupID > 52 || groupID < 1 { // если нечего отображать
 			w.WriteHeader(http.StatusNotFound)
 			tplAll.ExecuteTemplate(w, "error.html", 404)
 			return
 		}
-		
-			groupie := GetFullInfoForArtist(w, groupID)
-			tplAll.ExecuteTemplate(w, "group.html", groupie)
-		
-	} 
-	
 
+		groupie := GetFullInfoForArtist(w, groupID)
+		tplAll.ExecuteTemplate(w, "group.html", groupie)
+
+	}
 
 }
 
+// obrabotchik poiska
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// формирует структуру ArtistFull для указанного испольнителя
-func GetFullInfoForArtist(w http.ResponseWriter, groupID int) ArtistFull {
-	var groupie ArtistFull
-	relatslink := ""
-	for _, group := range artists {
-
-		if int(group.Id) == groupID {
-
-			groupie.ID = int(group.Id)
-			groupie.Image = group.Image
-			groupie.Name = group.Name
-			groupie.Members = group.Members
-			groupie.CreationDate = int(group.CreationDate)
-			groupie.FirstAlbum = group.FirstAlbum
-			relatslink = group.Relations
-
-			break
+	searchString := r.FormValue("toFind")
+	searchType := r.FormValue("searchType")
+	var artistsFound []ArtistFull
+	for _, copy := range db {
+		switch searchType {
+		case "artist":
+			if strings.Contains(strings.ToLower(copy.Name), strings.ToLower(searchString)) {
+				artistsFound = append(artistsFound, copy)
+			}
+		case "member":
+			for _, member := range copy.Members {
+				if strings.Contains(strings.ToLower(member), strings.ToLower(searchString)) {
+					artistsFound = append(artistsFound, copy)
+					break
+				}
+			}
+		case "creationDate":
+			if strconv.Itoa(int(copy.CreationDate)) == searchString {
+				artistsFound = append(artistsFound, copy)
+			}
+		case "firstAlbum":
+			if copy.FirstAlbum == searchString {
+				artistsFound = append(artistsFound, copy)
+			}
+		case "location":
+			// fmt.Println(searchString)
+			for _, place := range copy.Locations {
+				// fmt.Println(place)
+				if strings.Contains(strings.ToLower(place), strings.ToLower(searchString)) {
+					artistsFound = append(artistsFound, copy)
+					break
+				}
+			}
 		}
 	}
-
-	// запрашиваем Relations
-	resp, err := http.Get(relatslink)
+	fmt.Println(artistsFound)
+	err := tplAll.ExecuteTemplate(w, "found.html", artistsFound)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return groupie
+		fmt.Println(err)
 	}
-	
-	data, err2 := ioutil.ReadAll(resp.Body)
-	if err2 != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return groupie
-	}
-	resp.Body.Close()
-
-	// обрабатываем полученные данные и формируем массив струтур ConcDates
-	for index, value := range data {
-		if index != 0 && value == '{' {
-			data = data[index+1:]
-			break
-		}
-	}
-	data = data[:len(data)-4]
-	stringData := string(data)
-	uniqueLoc := strings.Split(stringData, "],")
-	for index, location := range uniqueLoc {
-		var loc ConcDates
-		loc.LocId = index
-		relation := strings.Split(location, ":[")
-		loc.Location = relation[0][1 : len(relation[0])-1]
-		loc.Dates = strings.Split(relation[1], ",")
-		for i, val := range loc.Dates {
-			loc.Dates[i] = val[1 : len(val)-1]
-		}
-		groupie.ConcertDates = append(groupie.ConcertDates, loc)
-	}
-
-	return groupie
-}
-
-// формируем основную базу исполнителей
-func GetArtistBase(w http.ResponseWriter) {
-	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return 
-	}
-	data, err2 := ioutil.ReadAll(resp.Body)
-	if err2 != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return 
-	}
-	resp.Body.Close()
-	json.Unmarshal(data, &artists)
-	
-	return 
 }
