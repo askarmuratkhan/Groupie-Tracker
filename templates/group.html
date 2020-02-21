@@ -22,13 +22,13 @@
     </div>
     <br>
     <br>
-        <h2>Concerts:</h2 > 
+        <h2 class="members">Concerts:</h2> 
             {{ range $key, $value := .ConcertDates }} 
             <br>
-            <p>Город: {{ $value.Location }}</p>
-            <p>Даты: </p>
+            <p class="members">Город: {{ $value.Location }}</p>
+            <p class="members">Даты: </p>
                 {{ range $value.Dates }} 
-                <p> {{.}} </p> 
+                <p class="members"> {{.}} </p> 
                 {{end}}
             
             {{end}}

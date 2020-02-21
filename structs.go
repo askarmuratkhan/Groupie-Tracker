@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -36,12 +37,12 @@ type LocationsList struct {
 	} `json:"index"`
 }
 
-type DatesList struct {
-	index struct {
-		ID    int
-		Dates []string
-	}
-}
+// type DatesList struct {
+// 	index struct {
+// 		ID    int
+// 		Dates []string
+// 	}
+// }
 
 // детальная структура по исполнителю для отображения на личной странице
 type ArtistFull struct {
@@ -53,42 +54,47 @@ type ArtistFull struct {
 	FirstAlbum   string
 	ConcertDates []ConcDates
 	Locations    []string
-	CDates       []string
+	// CDates       []string
 }
 
 // основная база
-var artists []Artist
-var db []ArtistFull
+var Artists []Artist
+var DB []ArtistFull
 
 // формируем основную базу исполнителей
 func GetArtistBase(w http.ResponseWriter) {
-	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return
-	}
-	data, err2 := ioutil.ReadAll(resp.Body)
-	if err2 != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return
-	}
-	resp.Body.Close()
-	json.Unmarshal(data, &artists)
+	if Artists == nil {
+		resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			tplAll.ExecuteTemplate(w, "error.html", 500)
+			fmt.Println(err)
+			return
+		}
+		data, err2 := ioutil.ReadAll(resp.Body)
+		if err2 != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			tplAll.ExecuteTemplate(w, "error.html", 500)
+			fmt.Println(err2)
+			return
+		}
+		resp.Body.Close()
+		json.Unmarshal(data, &Artists)
 
-	// delaem polnuyu bazu bez relats
-	for _, group := range artists {
-		var a ArtistFull
-		a.ID = group.ID
-		a.Image = group.Image
-		a.Name = group.Name
-		a.Members = group.Members
-		a.CreationDate = group.CreationDate
-		a.FirstAlbum = group.FirstAlbum
-		db = append(db, a)
+		// delaem polnuyu bazu bez relats
+
+		for _, group := range Artists {
+			var a ArtistFull
+			a.ID = group.ID
+			a.Image = group.Image
+			a.Name = group.Name
+			a.Members = group.Members
+			a.CreationDate = group.CreationDate
+			a.FirstAlbum = group.FirstAlbum
+			DB = append(DB, a)
+		}
+		getLocationsForArtist(w)
 	}
-	getLocationsForArtist(w)
 	// getDatesForArtist(w)
 
 	return
@@ -96,21 +102,21 @@ func GetArtistBase(w http.ResponseWriter) {
 
 // формирует структуру ArtistFull для указанного испольнителя
 func GetFullInfoForArtist(w http.ResponseWriter, groupID int) ArtistFull {
-	relatslink := artists[groupID-1].Relations
+	relatslink := Artists[groupID-1].Relations
 
 	// запрашиваем Relations
 	resp, err := http.Get(relatslink)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return db[groupID-1]
+		return DB[groupID-1]
 	}
 
 	data, err2 := ioutil.ReadAll(resp.Body)
 	if err2 != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		tplAll.ExecuteTemplate(w, "error.html", 500)
-		return db[groupID-1]
+		return DB[groupID-1]
 	}
 	resp.Body.Close()
 
@@ -133,8 +139,8 @@ func GetFullInfoForArtist(w http.ResponseWriter, groupID int) ArtistFull {
 		for i, val := range loc.Dates {
 			loc.Dates[i] = val[1 : len(val)-1]
 		}
-		db[groupID-1].ConcertDates = append(db[groupID-1].ConcertDates, loc)
+		DB[groupID-1].ConcertDates = append(DB[groupID-1].ConcertDates, loc)
 	}
 
-	return db[groupID-1]
+	return DB[groupID-1]
 }

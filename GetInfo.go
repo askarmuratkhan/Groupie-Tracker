@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -12,19 +13,27 @@ func getLocationsForArtist(w http.ResponseWriter) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		tplAll.ExecuteTemplate(w, "error.html", 500)
+		fmt.Println(err)
 		return
 	}
 	data, err2 := ioutil.ReadAll(resp.Body)
 	if err2 != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		tplAll.ExecuteTemplate(w, "error.html", 500)
+		fmt.Println(err2)
 		return
 	}
 	resp.Body.Close()
-	json.Unmarshal(data, &loc)
+	err = json.Unmarshal(data, &loc)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		tplAll.ExecuteTemplate(w, "error.html", 500)
+		fmt.Println(err)
+		return
+	}
 
 	for index, structure := range loc.Index {
-		db[index].Locations = structure.Locations
+		DB[index].Locations = structure.Locations
 	}
 
 	return

@@ -9,18 +9,18 @@
         <div class="SEARCH">
         <div class="search-bar">
             <form action="/" method="POST"><br>
-                <input class="search" name="toFind" list="list" placeholder="Search">
+                <input class="search" name="toFind" list="list" placeholder="Search" autocomplete="off">
 
-                <datalist name="list" >
+                <datalist id="list" >
                     {{ range $key, $value := . }}
-                        <option >{{ $value.Name }} // Artist </option>
-                            {{ range $key, $value2 := $value.Members }}
-                                <option>{{ $value2 }} // Members </option>
+                        <option >{{ $value.Name }} // Artist</option>
+                            {{ range $key, $value2 := $value.Members}}
+                                <option>{{ $value2 }} // Members</option>
                             {{ end }}
-                        <option>{{ $value.FirstAlbum }} // First Album </option>
-                        <option>{{ $value.CreationDate }} // Creation Date </option>
-                            {{ range $key, $value2 := $value.Locations }}
-                                <option>{{ $value2 }} // Location </option>
+                        <option>{{ $value.FirstAlbum}} // First Album</option>
+                        <option>{{ $value.CreationDate}} // Creation Date</option>
+                            {{ range $key, $value2 := $value.Locations}}
+                                <option>{{ $value2 }} // Location</option>
                             {{ end }}
                     {{ end }}
                 </datalist>
