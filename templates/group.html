@@ -17,7 +17,7 @@
         <div class="headblock">
         <img class="Image" src= {{ .Image }}  alt="Картинка группы" />
         <div class="info">
-        <p class="members">Members: / {{range .Members}}  {{.}} / {{end}}</p>
+        <p class="ARTISTS">Members: / {{range .Members}}  {{.}} / {{end}}</p>
         <p class="CreationDate">Creation date: {{ .CreationDate }}</p>
         <p class="FirstAlbum">First album: {{ .FirstAlbum }}</p>
         </div>
@@ -26,17 +26,24 @@
     <br>
   
     <div class="conserts">
+        
         <h2 class="members">Concerts:</h2> 
-            {{ range $key, $value := .ConcertDates }} 
-            <br>
-            <p class="members">Город: {{ $value.Location }}</p>
-            <p class="members">Даты: </p>
+      
+        {{ range $key, $value := .ConcertDates }} 
+            <!-- <br> -->
+                    
+            <p class="members">Сities: {{ $value.Location }}</p>
+            <p class="members">Dates: </p>
                 {{ range $value.Dates }} 
                 <p class="members"> {{.}} </p> 
+              
                 {{end}}
-            
-            {{end}}
-
+                <br>
+             
+                {{end}}
+          
+            </div>    
+         
         </div>
         </section>
     
