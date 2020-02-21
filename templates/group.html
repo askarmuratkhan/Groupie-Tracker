@@ -6,7 +6,9 @@
     <link rel="stylesheet" type="text/css" href="/CSS/style.css" />
 </head>
 <body>   
-    <a href="/" class="members">Go to main page</a>
+    <div class="LINKHOME">
+    <a href="/" class="linkhome">Go to main page</a>
+    </div>
     <div class="Groupie-Tracker"> 
         <p class="TextGroupieTracker" > {{ .Name }} </p>
     </div> 
@@ -22,6 +24,8 @@
     </div>
     <br>
     <br>
+  
+    <div class="conserts">
         <h2 class="members">Concerts:</h2> 
             {{ range $key, $value := .ConcertDates }} 
             <br>
@@ -33,7 +37,7 @@
             
             {{end}}
 
-        
+        </div>
         </section>
     
     </div>   
